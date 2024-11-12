@@ -25,8 +25,14 @@ Network.prototype.isValidIP = function(IP) {
 */
 Network.prototype.getRequest = function(url) {
     return new Promise((resolve, reject) => {
+        _url = new URL(url);
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", url, true);
+        if (_url.hostname != location.hostname){
+            xhttp.open("GET", _url.href.replace(_url.host,location.host+"/proxy"), true, "admin", "admin");
+            xhttp.setRequestHeader("X-Target-Host", _url.host);
+        }
+        else xhttp.open("GET", _url, true, "admin", "admin");
+        xhttp.withCredentials = true;
         xhttp.onload = () => {
             if (xhttp.status == 200) 
                 resolve(xhttp.responseXML);
@@ -44,8 +50,14 @@ Network.prototype.getRequest = function(url) {
 */
 Network.prototype.putRequest = function(url, body) {
     return new Promise((resolve, reject) => {
+        _url = new URL(url);
         var xhttp = new XMLHttpRequest();
-        xhttp.open("PUT", url, true);
+        if (_url.hostname != location.hostname){
+            xhttp.open("PUT", _url.href.replace(_url.host,location.host+"/proxy"), true, "admin", "admin");
+            xhttp.setRequestHeader("X-Target-Host", _url.host);
+        }
+        else xhttp.open("PUT", _url, true, "admin", "admin");
+        xhttp.withCredentials = true;
         xhttp.setRequestHeader("Content-Type", "text/html");
         xhttp.onload = () => {
             if (xhttp.status == 200) 
