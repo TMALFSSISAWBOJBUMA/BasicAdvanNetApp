@@ -1,5 +1,5 @@
 body {
-    background-color:  #ecf0f1;
+    background-color: #ecf0f1;
 }
 
 #readerOptionsForm {
@@ -16,7 +16,9 @@ img {
 }
 
 /* input type=number */
-#power, #sensitivity, #volume {
+#power,
+#sensitivity,
+#volume {
     width: 5em;
 }
 

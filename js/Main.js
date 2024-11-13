@@ -1,4 +1,3 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var controller = new Controller();
 });
-    
