@@ -234,6 +234,17 @@
             </div>
         </div>
 
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            document.querySelector("#readerIP").value =
+                urlParams.get("device_ip");
+            window.onload = function () {
+                if (urlParams.get("device_ip") != null) {
+                    document.querySelector("#connectBtn").click();
+                }
+            };
+        </script>
+
         <!-- Scripts -->
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/tabulator/jquery-ui-1.12.min.js"></script>
