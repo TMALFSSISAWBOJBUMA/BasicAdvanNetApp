@@ -1,7 +1,36 @@
-from flask import Flask, request, jsonify, Response, send_from_directory
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    Response,
+    send_from_directory,
+    abort,
+    render_template,
+    redirect,
+)
 import requests
+from requests.exceptions import ConnectionError
 import pathlib as pl
 import os
+from zeroconf import ServiceBrowser, ServiceListener, Zeroconf
+
+
+class MyListener(ServiceListener):
+    devices: dict[str:str] = {}
+
+    def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
+        info = zc.get_service_info(type_, name)
+        self.devices[name] = info.parsed_addresses()[0]
+
+    def remove_service(self, zc: Zeroconf, type_: str, name: str) -> None:
+        print(f"Service {name} removed")
+        del self.devices[name]
+
+    def add_service(self, zc: Zeroconf, type_: str, name: str) -> None:
+        info = zc.get_service_info(type_, name)
+        print(f"Service {name} added")
+        self.devices[name] = info.parsed_addresses()[0]
+
 
 app = Flask("AdvanNet App Demo")
 
@@ -15,17 +44,17 @@ def proxy_request(
     if target is None:
         return jsonify({"error": "X-Target-Host header is required"}), 400
     try:
-    res = requests.request(  # ref. https://stackoverflow.com/a/36601467/248616
-        method=request.method,
-        url=request.url.replace(request.host + "/proxy", f"{target}"),
-        headers={
-            k: v for k, v in request.headers if k.lower() != "host"
-        },  # exclude 'host' header
-        data=request.get_data(),
-        cookies=request.cookies,
-        allow_redirects=False,
+        res = requests.request(  # ref. https://stackoverflow.com/a/36601467/248616
+            method=request.method,
+            url=request.url.replace(request.host + "/proxy", f"{target}"),
+            headers={
+                k: v for k, v in request.headers if k.lower() != "host"
+            },  # exclude 'host' header
+            data=request.get_data(),
+            cookies=request.cookies,
+            allow_redirects=False,
             timeout=2,
-    )
+        )
     except ConnectionError as e:
         abort(502)
 
@@ -51,15 +80,31 @@ def root(paf):
     return send_from_directory(pl.Path(__file__).parent, paf)
 
 
-@app.route("/")
-@app.route("/index")
-def index():
+@app.route("/connect")
+def connect():
     return root("index.html")
 
 
+@app.route("/")
+def index():
+    return redirect("/scan")
+
+
+@app.route("/scan")
+def devices():
+    return render_template("scan.html.j2", devices=app.config["KEONN_FINDER"].devices)
+
+
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=os.environ.get("PORT", 8000),
-        debug=os.environ.get("DEBUG", False),
-    )
+    zeroconf = Zeroconf()
+    listener = MyListener()
+    browser = ServiceBrowser(zeroconf, "_workstation._tcp.local.", listener)
+    try:
+        app.config["KEONN_FINDER"] = listener
+        app.run(
+            host="0.0.0.0",
+            port=os.environ.get("PORT", 8000),
+            debug=os.environ.get("DEBUG", False),
+        )
+    finally:
+        zeroconf.close()
