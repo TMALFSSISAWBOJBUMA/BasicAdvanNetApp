@@ -14,6 +14,7 @@ def proxy_request(
     target = request.headers.get("X-Target-Host", None)
     if target is None:
         return jsonify({"error": "X-Target-Host header is required"}), 400
+    try:
     res = requests.request(  # ref. https://stackoverflow.com/a/36601467/248616
         method=request.method,
         url=request.url.replace(request.host + "/proxy", f"{target}"),
@@ -23,7 +24,10 @@ def proxy_request(
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False,
+            timeout=2,
     )
+    except ConnectionError as e:
+        abort(502)
 
     # region exlcude some keys in :res response
     excluded_headers = [
