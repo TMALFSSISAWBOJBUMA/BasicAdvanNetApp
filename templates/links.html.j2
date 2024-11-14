@@ -1,0 +1,3 @@
+{% for name,ip in devices.items() %}
+<a class="element" href="{{url_for('connect',device_ip=ip)}}">{{ name[:name.rindex(']')+1] }}</a>
+{% endfor %}

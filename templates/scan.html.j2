@@ -439,11 +439,16 @@
     </div>
     <p>Found devices:</p>
     <div class="links">
-        {% for name,ip in devices.items() %}
-        <a class="element" href="{{url_for('connect',device_ip=ip)}}">{{ name[:name.rindex(']')+1] }}</a>
-        {% endfor %}
+        {{links}}
     </div>
     <a class="element" id="redirect" href="{{ url_for('connect') }}">Connection page</a>
+    <script>
+        setInterval(async () => {
+            let r = await fetch("/scan?links")
+            if (r.ok)
+                document.querySelector('div.links').innerHTML = await r.text();
+        }, 2000)
+    </script>
 </body>
 
 </html>

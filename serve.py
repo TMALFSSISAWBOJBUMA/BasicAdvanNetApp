@@ -92,7 +92,12 @@ def index():
 
 @app.route("/scan")
 def devices():
-    return render_template("scan.html.j2", devices=app.config["KEONN_FINDER"].devices)
+    links_html = render_template(
+        "links.html.j2", devices=app.config["KEONN_FINDER"].devices
+    )
+    if request.args.get("links", None) is None:
+        return render_template("scan.html.j2", links=links_html)
+    return links_html
 
 
 if __name__ == "__main__":
