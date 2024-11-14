@@ -96,7 +96,7 @@ def devices():
 
 
 if __name__ == "__main__":
-    zeroconf = Zeroconf()
+    zeroconf = Zeroconf(unicast=True)
     listener = MyListener()
     browser = ServiceBrowser(zeroconf, "_workstation._tcp.local.", listener)
     try:
