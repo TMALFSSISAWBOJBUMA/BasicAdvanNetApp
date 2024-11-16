@@ -1,14 +1,15 @@
 # Basic AdvanNet App
-To use this demo, Python 3 has to be installed on your device.
 
-If you don't have the `py` alias defined, add it to you command line.
+To use this demo, [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) has to be installed on your device.
 
 Install required dependencies by running:
+
 ```
-py -m pip install --upgrade pip && py -m pip install -r requirements.txt
+uv venv
+uv sync
 ```
 
-To start the server, run `py serve.py` or `flask -A ./serve.py run [--debug]`.
+To start the server, run `uv run serve.py`.
 
 ## Original readme
 

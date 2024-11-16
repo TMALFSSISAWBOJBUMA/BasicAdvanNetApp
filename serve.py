@@ -55,7 +55,7 @@ def proxy_request(
             allow_redirects=False,
             timeout=2,
         )
-    except ConnectionError as e:
+    except ConnectionError:
         abort(502)
 
     # region exlcude some keys in :res response
@@ -77,7 +77,7 @@ def proxy_request(
 
 @app.route("/<path:paf>")
 def root(paf):
-    return send_from_directory(pl.Path(__file__).parent, paf)
+    return send_from_directory(pl.Path(__file__).parent / "static", paf)
 
 
 @app.route("/connect")
