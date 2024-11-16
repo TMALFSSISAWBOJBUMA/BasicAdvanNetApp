@@ -10,6 +10,7 @@ from flask import (
 )
 import requests
 from requests.exceptions import ConnectionError
+from requests.auth import HTTPDigestAuth
 import pathlib as pl
 import os
 from zeroconf import ServiceBrowser, ServiceListener, Zeroconf
@@ -21,6 +22,7 @@ class MyListener(ServiceListener):
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         info = zc.get_service_info(type_, name)
         self.devices[name] = info.parsed_addresses()[0]
+        print(f"Service {name} updated")
 
     def remove_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         print(f"Service {name} removed")
@@ -35,8 +37,11 @@ class MyListener(ServiceListener):
 app = Flask("AdvanNet App Demo")
 
 
+PROXY_URL = "/keonn_proxy"
+
+
 # from https://stackoverflow.com/a/36601467
-@app.route("/proxy/<path:path>", methods=["GET", "PUT", "OPTIONS"])
+@app.route(f"{PROXY_URL}/<path:path>", methods=["GET", "PUT", "OPTIONS"])
 def proxy_request(
     path,
 ):
@@ -46,14 +51,14 @@ def proxy_request(
     try:
         res = requests.request(  # ref. https://stackoverflow.com/a/36601467/248616
             method=request.method,
-            url=request.url.replace(request.host + "/proxy", f"{target}"),
+            url=request.url.replace(request.host + PROXY_URL, f"{target}"),
             headers={
                 k: v for k, v in request.headers if k.lower() != "host"
             },  # exclude 'host' header
             data=request.get_data(),
             cookies=request.cookies,
-            allow_redirects=False,
             timeout=2,
+            auth=HTTPDigestAuth("admin", "admin"),
         )
     except ConnectionError:
         abort(502)
