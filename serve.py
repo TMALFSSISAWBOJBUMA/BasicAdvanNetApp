@@ -17,6 +17,7 @@ import time
 from zeroconf import ServiceBrowser, Zeroconf, ServiceInfo
 import re
 from datetime import datetime as dt, timezone as tz
+import humanize as hm
 from peewee import (
     SqliteDatabase,
     Model,
@@ -212,10 +213,9 @@ def devices():
         app.config["KEONN_FINDER"].restart_browser()
 
     def time_diff(str_date: str | dt) -> str:
-        return str(
-            now()
-            - (isinstance(str_date, str) and dt.fromisoformat(str_date) or str_date)
-        ).split(".")[0]
+        return hm.naturaltime(
+            isinstance(str_date, str) and dt.fromisoformat(str_date) or str_date
+        )
 
     links_html = render_template(
         "links.html.j2",
