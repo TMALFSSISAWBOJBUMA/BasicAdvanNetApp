@@ -1,262 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Basic Advannet App</title>
-        <link rel="stylesheet" href="css/bootstrap.css" />
-        <link rel="stylesheet" href="css/tabulator/tabulator.min.css" />
-        <link
-            rel="stylesheet"
-            href="css/tabulator/tabulator_bootstrap4.min.css"
-        />
-        <link rel="stylesheet" href="css/keonn-style.css" />
-    </head>
-    <body>
-        <div class="container">
-            <!-- Company logo -->
-            <div class="row">
-                <div class="col-sm-6 col-lg-3">
-                    <header class="my-4">
-                        <img src="img/keonn-logo.png" class="w-100" />
-                    </header>
-                </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Basic Advannet App</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/tabulator/tabulator.min.css" />
+    <link rel="stylesheet" href="css/tabulator/tabulator_bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/keonn-style.css" />
+    <style>
+      .spinner {
+        -webkit-animation: fa-spin 2s infinite linear;
+        animation: fa-spin 2s infinite linear;
+        display: inline-block;
+        font-family: Lucida Sans Unicode;
+      }
+      .spinner::before {
+        content: "↻";
+      }
+      @-webkit-keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg);
+        }
+      }
+      @keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Company logo -->
+      <div class="row">
+        <div class="col-sm-6 col-lg-3">
+          <header class="my-4">
+            <img src="img/keonn-logo.png" class="w-100" />
+          </header>
+        </div>
+      </div>
+
+      <!-- Connect to reader -->
+      <div class="row">
+        <div class="col-lg-3 mb-lg-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="ipText">IP</span>
             </div>
-
-            <!-- Connect to reader -->
-            <div class="row">
-                <div class="col-lg-3 mb-lg-4">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="ipText">IP</span>
-                        </div>
-                        <input
-                            type="text"
-                            id="readerIP"
-                            class="form-control"
-                            aria-label="readerIP"
-                            aria-describedby="ipText"
-                        />
-                        <div class="input-group-append">
-                            <button
-                                type="button"
-                                id="connectBtn"
-                                class="btn btn-warning"
-                            >
-                                Connect
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Display a success or error message when performing an operation -->
-                <div class="col-lg-9">
-                    <div class="alert p-0" role="alert" id="operationStatus">
-                        <button
-                            type="button"
-                            id="closeBtn"
-                            class="close d-none"
-                            aria-label="Close"
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                </div>
+            <input
+              type="text"
+              id="readerIP"
+              class="form-control"
+              aria-label="readerIP"
+              aria-describedby="ipText"
+            />
+            <div class="input-group-append">
+              <button type="button" id="connectBtn" class="btn btn-warning">
+                Connect
+              </button>
             </div>
-
-            <!-- Reader options -->
-            <div class="row">
-                <div class="col-lg-3" id="options">
-                    <form id="readerOptionsForm" class="rounded">
-                        <div class="container">
-                            <!-- Start/Stop reader & status -->
-                            <div class="row" role="alert">
-                                <div
-                                    class="col m-3 alert-info alert"
-                                    id="statusBg"
-                                >
-                                    <div class="form-group mb-0">
-                                        <button
-                                            type="button"
-                                            id="startStopButton"
-                                            class="btn btn-light"
-                                        >
-                                            Start
-                                        </button>
-                                        <span class="mx-2" id="statusText"
-                                            >CONNECT</span
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Model -->
-                            <div class="row">
-                                <div class="col-3">
-                                    <div class="form-group">
-                                        <label for="readerModel">Model</label>
-                                    </div>
-                                </div>
-                                <div class="col-9 text-right">
-                                    <div id="readerModel"></div>
-                                </div>
-                            </div>
-
-                            <!-- Power -->
-                            <div class="row">
-                                <div class="col-3">
-                                    <div class="form-group">
-                                        <label for="power">Power</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-9 text-right">
-                                    <img
-                                        id="decreasePower"
-                                        src="img/minus.svg"
-                                        class="d-xl-none"
-                                    />
-                                    <input
-                                        type="number"
-                                        id="power"
-                                        class="form-control d-inline"
-                                        pattern="[0-9]"
-                                        min="0"
-                                        max="31"
-                                        step="0.5"
-                                    />
-                                    <img
-                                        id="increasePower"
-                                        src="img/plus.svg"
-                                        class="d-xl-none"
-                                    />
-                                </div>
-                            </div>
-
-                            <!-- Sensitivity -->
-                            <div class="row">
-                                <div class="col-3">
-                                    <div class="form-group">
-                                        <label for="sensitivity"
-                                            >Sensitivity</label
-                                        >
-                                    </div>
-                                </div>
-
-                                <div class="col-9 text-right">
-                                    <img
-                                        id="decreaseSensitivity"
-                                        src="img/minus.svg"
-                                        class="d-xl-none"
-                                    />
-                                    <input
-                                        type="number"
-                                        id="sensitivity"
-                                        class="form-control d-inline"
-                                        pattern="[0-9]"
-                                        min="-75"
-                                        max="-35"
-                                        step="1"
-                                    />
-                                    <img
-                                        id="increaseSensitivity"
-                                        src="img/plus.svg"
-                                        class="d-xl-none"
-                                    />
-                                </div>
-                            </div>
-
-                            <!-- Antennas -->
-                            <div class="row">
-                                <div class="col-2">
-                                    <div class="form-group">
-                                        <label for="antennas">Antennas</label
-                                        ><br />
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="col-10 text-right"
-                                    id="antennasList"
-                                ></div>
-                            </div>
-
-                            <!-- Speaker -->
-                            <div class="row">
-                                <div class="col-2">
-                                    <div class="form-group">
-                                        <label for="volume">Speaker</label>
-                                    </div>
-                                </div>
-                                <div class="col-10 text-right">
-                                    <img
-                                        id="speaker"
-                                        src="img/speaker.svg"
-                                        class=""
-                                    />
-                                </div>
-                            </div>
-
-                            <!-- Save button -->
-                            <div class="row">
-                                <div class="col">
-                                    <button
-                                        id="saveBtn"
-                                        class="mb-3 mt-2 btn btn-primary btn-block"
-                                        type="button"
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <br />
-
-                <!-- Table to display the tags being read -->
-                <div class="col-lg-9 mt-3 mt-lg-0">
-                    <div id="tagsSection">
-                        <div
-                            id="tagsList"
-                            class="thead-dark md-2 border-0 rounded"
-                        ></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="row my-5">
-                <div class="col text-right text-black-50">
-                    <footer></footer>
-                </div>
-            </div>
+          </div>
         </div>
 
-        <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            document.querySelector("#readerIP").value =
-                urlParams.get("device_ip");
-            window.onload = function () {
-                if (urlParams.get("device_ip") != null) {
-                    document.querySelector("#connectBtn").click();
-                }
-            };
-        </script>
+        <!-- Display a success or error message when performing an operation -->
+        <div class="col-lg-9">
+          <div class="alert p-0" role="alert" id="operationStatus">
+            <button
+              type="button"
+              id="closeBtn"
+              class="close d-none"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
-        <!-- Scripts -->
-        <script src="js/jquery-3.3.1.min.js"></script>
-        <script src="js/tabulator/jquery-ui-1.12.min.js"></script>
-        <script src="js/tabulator/tabulator.min.js"></script>
-        <script src="js/util.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+      <!-- Reader options -->
+      <div class="row">
+        <div class="col-lg-3" id="options">
+          <form id="readerOptionsForm" class="rounded">
+            <div class="container">
+              <!-- Start/Stop reader & status -->
+              <div class="row" role="alert">
+                <div class="col m-3 alert-info alert" id="statusBg">
+                  <div class="form-group mb-0">
+                    <button
+                      type="button"
+                      id="startStopButton"
+                      class="btn btn-light"
+                    >
+                      Start
+                    </button>
+                    <span class="mx-2" id="statusText">CONNECT</span>
+                  </div>
+                </div>
+              </div>
 
-        <!-- MVC + N -->
-        <script src="js/Model.js"></script>
-        <script src="js/Network.js"></script>
-        <script src="js/View.js"></script>
-        <script src="js/Controller.js"></script>
-        <script src="js/Main.js"></script>
-    </body>
+              <!-- Model -->
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="readerModel">Model</label>
+                  </div>
+                </div>
+                <div class="col-9 text-right">
+                  <div id="readerModel"></div>
+                </div>
+              </div>
+
+              <!-- Power -->
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="power">Power</label>
+                  </div>
+                </div>
+
+                <div class="col-9 text-right">
+                  <img
+                    id="decreasePower"
+                    src="img/minus.svg"
+                    class="d-xl-none"
+                  />
+                  <input
+                    type="number"
+                    id="power"
+                    class="form-control d-inline"
+                    pattern="[0-9]"
+                    min="0"
+                    max="31"
+                    step="0.5"
+                  />
+                  <img
+                    id="increasePower"
+                    src="img/plus.svg"
+                    class="d-xl-none"
+                  />
+                </div>
+              </div>
+
+              <!-- Sensitivity -->
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="sensitivity">Sensitivity</label>
+                  </div>
+                </div>
+
+                <div class="col-9 text-right">
+                  <img
+                    id="decreaseSensitivity"
+                    src="img/minus.svg"
+                    class="d-xl-none"
+                  />
+                  <input
+                    type="number"
+                    id="sensitivity"
+                    class="form-control d-inline"
+                    pattern="[0-9]"
+                    min="-75"
+                    max="-35"
+                    step="1"
+                  />
+                  <img
+                    id="increaseSensitivity"
+                    src="img/plus.svg"
+                    class="d-xl-none"
+                  />
+                </div>
+              </div>
+
+              <!-- Antennas -->
+              <div class="row">
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="antennas">Antennas</label><br />
+                  </div>
+                </div>
+
+                <div class="col-10 text-right" id="antennasList"></div>
+              </div>
+
+              <!-- Speaker -->
+              <div class="row">
+                <div class="col-2">
+                  <div class="form-group">
+                    <label for="volume">Speaker</label>
+                  </div>
+                </div>
+                <div class="col-10 text-right">
+                  <img id="speaker" src="img/speaker.svg" class="" />
+                </div>
+              </div>
+
+              <!-- Save button -->
+              <div class="row">
+                <div class="col">
+                  <button
+                    id="saveBtn"
+                    class="mb-3 mt-2 btn btn-primary btn-block"
+                    type="button"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <br />
+
+        <!-- Table to display the tags being read -->
+        <div class="col-lg-9 mt-3 mt-lg-0">
+          <div id="tagsSection">
+            <div id="tagsList" class="thead-dark md-2 border-0 rounded"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="row my-5">
+        <div class="col text-right text-black-50">
+          <footer></footer>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      document.querySelector("#readerIP").value = urlParams.get("device_ip");
+      window.onload = function () {
+        if (urlParams.get("device_ip") != null) {
+          document.querySelector("#connectBtn").click();
+        }
+      };
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/tabulator/jquery-ui-1.12.min.js"></script>
+    <script src="js/tabulator/tabulator.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- MVC + N -->
+    <script src="js/Model.js"></script>
+    <script src="js/Network.js"></script>
+    <script src="js/View.js"></script>
+    <script src="js/Controller.js"></script>
+    <script src="js/Main.js"></script>
+  </body>
 </html>

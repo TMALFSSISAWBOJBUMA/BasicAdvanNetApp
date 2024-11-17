@@ -17,6 +17,7 @@ Controller.prototype.connectToReader = async function (readerIP) {
     var connectionResult = await this.net.connectToReader(readerIP);
     if (connectionResult.status != "connected") {
       this.displayConnectionMessage(connectionResult.status);
+      document.querySelector("#connectBtn").innerHTML = "Connect";
       return;
     }
 
@@ -30,6 +31,7 @@ Controller.prototype.connectToReader = async function (readerIP) {
     this.displayReaderValues();
   } catch (error) {
     this.displayConnectionMessage("netError");
+    document.querySelector("#connectBtn").innerHTML = "Connect";
     throw Error(error);
   }
 };

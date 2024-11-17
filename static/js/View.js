@@ -117,6 +117,7 @@ View.prototype.toggleStartStop = function (startStopButton) {
 */
 View.prototype.connectToReader = function () {
   this.readerIP = document.getElementById("readerIP").value;
+  document.querySelector("#connectBtn").innerHTML = `<b class="spinner"></b>`;
   this.controller.connectToReader(this.readerIP);
 };
 
@@ -127,18 +128,15 @@ View.prototype.connectToReader = function () {
 View.prototype.displayConnectionMessage = function (connectionResult) {
   switch (connectionResult) {
     case "emptyIP":
-      this.displayOperationStatus("alert-danger", "Please, specify an IP.");
+      this.displayOperationStatus("alert-danger", "Please specify an IP.");
       break;
     case "invalidIP":
-      this.displayOperationStatus(
-        "alert-danger",
-        "Please, specify a valid IP.",
-      );
+      this.displayOperationStatus("alert-danger", "Please specify a valid IP.");
       break;
     case "netError":
       this.displayOperationStatus(
         "alert-danger",
-        "Network error: device is unreachable. Is CORS enabled?",
+        "Network error: device is unreachable.",
       );
       break;
     case "connected":
@@ -147,7 +145,7 @@ View.prototype.displayConnectionMessage = function (connectionResult) {
     case "notConnected":
       this.displayOperationStatus(
         "alert-danger",
-        "Please, connect to a reader first.",
+        "Please connect to a reader first.",
       );
       break;
     default:
