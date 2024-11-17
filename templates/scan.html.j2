@@ -33,6 +33,8 @@
             border-radius: 0.7em;
             color: inherit;
             text-decoration: none;
+            display: flex;
+            align-items: center;
         }
 
         #redirect {
@@ -48,12 +50,29 @@
             justify-content: center;
             gap: 0.5em;
         }
+
+        .status {
+            --dot-size: 1em;
+            width: var(--dot-size);
+            height: var(--dot-size);
+            border-radius: calc(var(--dot-size) / 2);
+            margin-left: 1ch;
+            flex-shrink: 0;
+        }
+
+        .on {
+            background: darkgreen;
+        }
+
+        .off {
+            background: darkred;
+        }
     </style>
     <style aria-description="hampter">
         /* https: //uiverse.io/Nawsome/wet-mayfly-23 */
         .wheel-and-hamster {
             --dur: 1s;
-            --hampter-size: min(50vh, 80vw);
+            --hampter-size: min(50vh, 70vw);
             position: relative;
             width: 12em;
             height: 12em;

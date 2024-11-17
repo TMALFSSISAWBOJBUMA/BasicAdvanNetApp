@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "flask>=3.1.0",
+    "peewee>=3.17.8",
     "requests>=2.32.3",
     "zeroconf>=0.136.0",
 ]

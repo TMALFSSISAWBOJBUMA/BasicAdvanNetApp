@@ -1,3 +1,9 @@
-{% for name,ip in devices.items() %}
-<a class="element" href="{{url_for('connect',device_ip=ip)}}">{{ name[:name.rindex(']')+1] }}</a>
+{% for dev in devices %}
+{% if dev.offline%}
+<a class="element" title="This device is offline! Last seen {{ time_diff(dev.last_link) }} ago at {{dev.ip}}">{{
+    dev.name }}<div class="status off"></div></a>
+{% else %}
+<a class="element" href="{{url_for('connect',device_ip=dev.ip)}}" title="Go to connection page">{{
+    dev.name }}<div class="status on"></div></a>
+{% endif %}
 {% endfor %}
