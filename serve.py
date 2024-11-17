@@ -1,32 +1,34 @@
+import os
+import pathlib as pl
+import re
+import time
+from datetime import datetime as dt
+from datetime import timezone as tz
+from functools import partial
+
+import humanize as hm
+import requests
 from flask import (
     Flask,
-    request,
-    jsonify,
     Response,
-    send_from_directory,
     abort,
-    render_template,
+    jsonify,
     redirect,
+    render_template,
+    request,
+    send_from_directory,
 )
-import requests
-from requests.exceptions import ConnectionError
-from requests.auth import HTTPDigestAuth
-import pathlib as pl
-import os
-import time
-from zeroconf import ServiceBrowser, Zeroconf, ServiceInfo
-import re
-from datetime import datetime as dt, timezone as tz
-import humanize as hm
 from peewee import (
-    SqliteDatabase,
-    Model,
-    CharField,
     BooleanField,
+    CharField,
     DateTimeField,
     IntegrityError,
+    Model,
+    SqliteDatabase,
 )
-from functools import partial
+from requests.auth import HTTPDigestAuth
+from requests.exceptions import ConnectionError
+from zeroconf import ServiceBrowser, ServiceInfo, Zeroconf
 
 now = partial(dt.now, tz.utc)
 db = SqliteDatabase("advannet_demo.db")
@@ -117,8 +119,7 @@ class KeonnFinder:
                 device.mdns_update(self.__zc)
                 yield device
         else:
-            for device in KeonnDevice.select():
-                yield device
+            yield from KeonnDevice.select()
 
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         print(f"ServiceBrowser updated {name}")
